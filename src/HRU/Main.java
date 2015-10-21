@@ -10,6 +10,7 @@ public class Main {
     public static HRUsubj current_subj;
 
     public static void main(String[] args) {
+        System.out.println("Введите команду: ");
         Scanner scan = new Scanner(System.in);
         while (true) {
             String command = scan.next();
@@ -52,7 +53,9 @@ public class Main {
     }
 
     private static void removeAccess(Scanner scan) {
+        System.out.println("У кого забираем доступ? ");
         String subj = scan.next();
+        System.out.println("На что забираем доступ? ");
         String obj = scan.next();
         if (current_subj != null)
             current_subj.removeAccess(subj, obj);
@@ -61,8 +64,11 @@ public class Main {
     }
 
     private static void setAccess(Scanner scan) {
+        System.out.println("");
         String subj_name = scan.next();
+        System.out.println();
         String obj_name = scan.next();
+        System.out.println();
         String access_type = scan.next();
         AccessType accessType = null;
         if (access_type.equals("write"))
@@ -72,7 +78,7 @@ public class Main {
         else if (access_type.equals("own"))
             accessType = AccessType.OWN;
         else {
-            System.out.println("Тип доступа не распознан");
+            System.err.println("Тип доступа не распознан");
             return;
         }
         if (current_subj != null)
@@ -82,7 +88,9 @@ public class Main {
     }
 
     private static void login(Scanner scan) {
+        System.out.println();
         String username = scan.next();
+        System.out.println();
         String password = scan.next();
         HRUsubj hrUsubj = AccessMap.getInstance().findSubj(username);
         if (hrUsubj != null && hrUsubj.getName().equals(username) && hrUsubj.getPassword().
@@ -94,6 +102,7 @@ public class Main {
     }
 
     private static void destroySubj(Scanner scan) {
+        System.out.println();
         String subj_name = scan.next();
         if (current_subj != null)
             current_subj.destroySubj(subj_name);
@@ -101,6 +110,7 @@ public class Main {
     }
 
     private static void destroyObj(Scanner scan) {
+        System.out.println();
         String obj_name = scan.next();
         if (current_subj != null)
             current_subj.destroyObj(obj_name);
@@ -108,6 +118,7 @@ public class Main {
     }
 
     private static void createObj(Scanner scan) {
+        System.out.println();
         String obj_name = scan.next();
         if (current_subj != null){
             try {
@@ -121,7 +132,9 @@ public class Main {
     }
 
     private static void createSubj(Scanner scan) {
+        System.out.println();
         String username = scan.next();
+        System.out.println();
         String password = scan.next();
         AccessMap.getInstance().createSubj(current_subj, username, password);
     }
