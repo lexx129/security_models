@@ -133,7 +133,7 @@ public class AccessMap {
         return false;
     }
 
-    private HRUobj findObj(String name) {
+    public HRUobj findObj(String name) {
         for (HRUobj o : objmap.keySet()) {
             if (o.getName().equals(name))
                 return o;
@@ -141,7 +141,7 @@ public class AccessMap {
         return null;
     }
 
-    private HRUsubj findSubj(String name) {
+    public HRUsubj findSubj(String name) {
         for (HRUsubj s : subjmap.keySet()) {
             if (s.getName().equals(name))
                 return s;
@@ -149,7 +149,7 @@ public class AccessMap {
         return null;
     }
 
-    public void print (HRUsubj hrUsubj){
+    public void open(HRUsubj hrUsubj){
         HashMap<HRUobj, AccessType> map = subjmap.get(hrUsubj);
         for (HRUobj hrUobj : map.keySet()){
             String message = "[%s] имя: %s тип доступа: %s";

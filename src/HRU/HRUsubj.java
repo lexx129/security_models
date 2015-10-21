@@ -4,7 +4,7 @@ package HRU;
  * Created by Lexx on 07.10.2015.
  */
 public class HRUsubj extends HRUobj{
-    protected String password;
+    private String password;
 
     public HRUsubj(String name, String password) {
         super(name);
@@ -33,9 +33,20 @@ public class HRUsubj extends HRUobj{
     public boolean removeAccess (String subj, String obj) {
         return AccessMap.getInstance().removeAccess(this, subj, obj);
     }
-    public void print(){
-        AccessMap.getInstance().print(this);
-
+    public void open(){
+        AccessMap.getInstance().open(this);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HRUobj hrUobj = (HRUobj) o;
+        return name.equals(hrUobj.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode() + 31 * password.hashCode();
+    }
 }
