@@ -18,10 +18,10 @@ public class AccessMap {
     public boolean createObj(HRUsubj creator, HRUobj object) throws IllegalAccessException {
         HashMap<HRUobj, AccessType> ownedObj = subjmap.get(creator);
         if (ownedObj != null) {
-            Object access = ownedObj.get(object);
-            if (access != null) {
+            Object access = ownedObj.get(object.getName());
+            if (access == null) {
                 ownedObj.put(object, AccessType.OWN);
-                objmap.put(object, new HashMap<HRUsubj, AccessType>());
+                objmap.put(object, new HashMap<>());
                 objmap.get(object).put(creator, AccessType.OWN);
                 return true;
             } else throw new IllegalStateException("Объект с таким именем уже зарегестирован");

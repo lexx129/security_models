@@ -10,9 +10,9 @@ public class Main {
     public static HRUsubj current_subj;
 
     public static void main(String[] args) {
-        System.out.println("?????????????? ??????????????: ");
         Scanner scan = new Scanner(System.in);
         while (true) {
+            System.out.println("Введите команду: ");
             String command = scan.next();
             switch (command) {
                 case "create_subj": {
@@ -31,7 +31,7 @@ public class Main {
                     destroySubj(scan);
                     break;
                 }
-                case "login:": {
+                case "login": {
                     login(scan);
                     break;
                 }
@@ -57,8 +57,10 @@ public class Main {
         String subj = scan.next();
         System.out.println("К чему забираем доступ? ");
         String obj = scan.next();
-        if (current_subj != null)
+        if (current_subj != null){
             current_subj.removeAccess(subj, obj);
+            System.out.println("Выполнено");
+        }
         else
             System.err.println("Сначала необхоимо авторизоваться.");
     }
@@ -85,8 +87,10 @@ public class Main {
                 System.err.println("Введенный тип доступа не распознан.");
                 return;
         }
-        if (current_subj != null)
+        if (current_subj != null) {
             current_subj.addAccess(subj_name, obj_name, accessType);
+            System.out.println("Выполнено.");
+        }
         else
             System.err.println("Сначала необходимо авторизоваться.");
     }
@@ -108,16 +112,20 @@ public class Main {
     private static void destroySubj(Scanner scan) {
         System.out.println("Имя удаляемого субъекта: ");
         String subj_name = scan.next();
-        if (current_subj != null)
+        if (current_subj != null) {
             current_subj.destroySubj(subj_name);
+            System.out.println("Субъект удален.");
+        }
         else System.err.println("Сначала необходимо авторизоваться.");
     }
 
     private static void destroyObj(Scanner scan) {
         System.out.println("Имя удаляемого объекта: ");
         String obj_name = scan.next();
-        if (current_subj != null)
+        if (current_subj != null) {
             current_subj.destroyObj(obj_name);
+            System.out.println("Объект удален.");
+        }
         else System.err.println("Сначала необходимо авторизоваться.");
     }
 
@@ -127,6 +135,7 @@ public class Main {
         if (current_subj != null){
             try {
                 current_subj.createObj(obj_name);
+                System.out.println("Объект создан.");
             } catch (IllegalAccessException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
@@ -140,6 +149,7 @@ public class Main {
         System.out.println("Пароль для нового субъекта: ");
         String password = scan.next();
         AccessMap.getInstance().createSubj(current_subj, username, password);
+        System.out.println("Субъект создан.");
     }
 
 }
