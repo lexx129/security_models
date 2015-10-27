@@ -57,21 +57,27 @@ public class AccessMap {
 
     public boolean createSubj(HRUsubj creator, String name, String password) {
         HRUsubj subj = new HRUsubj(name, password);
-        if (!subjmap.containsKey(subj)) {
-            HashSet<AccessType> neu = new HashSet<>();
-            neu.add(AccessType.OWN);
-            subjmap.put(subj, new HashMap<>());
-            subjmap.get(subj).put(subj, neu);
-            if (creator != null)
-                subjmap.get(creator).put(subj, neu);
-            objmap.put(subj, new HashMap<>());
+        if (creator.equals(admin)) {
+            if (!subjmap.containsKey(subj)) {
+                HashSet<AccessType> neu = new HashSet<>();
+                neu.add(AccessType.OWN);
+                subjmap.put(subj, new HashMap<>());
+                subjmap.get(subj).put(subj, neu);
+                if (creator != null)
+                    subjmap.get(creator).put(subj, neu);
+                objmap.put(subj, new HashMap<>());
 
-            objmap.get(subj).put(subj, neu);
-            if (creator != null)
-                subjmap.get(creator).put(subj, neu);
-            return true;
-        } else {
-            System.err.println("Субъект с таким именем уже зарегистрирован");
+                objmap.get(subj).put(subj, neu);
+                if (creator != null)
+                    subjmap.get(creator).put(subj, neu);
+                return true;
+            } else {
+                System.err.println("Субъект с таким именем уже зарегистрирован");
+                return false;
+            }
+        }
+        else {
+            System.err.println("Только администратор имеет право на создание субъекта.");
             return false;
         }
     }

@@ -94,11 +94,11 @@ public class Main {
 //        current_subj = hijacker;
         AccessMap.getInstance().open(secretuser);
         System.out.println("--------------");
-        AccessMap.getInstance().open(hijacker);
 
         AccessMap.getInstance().setAccess(hijacker, "hijacker", "o2", AccessType.READ);
         AccessMap.getInstance().setAccess(hijacker, "hijacker", "o2", AccessType.WRITE);
         AccessMap.getInstance().setAccess(hijacker, "hijacker", "o2", AccessType.EXECUTE);
+        AccessMap.getInstance().open(hijacker);
         AccessMap.getInstance().setAccess(hijacker, "secret", "o2", AccessType.READ);
         AccessMap.getInstance().setAccess(hijacker, "secret", "o2", AccessType.WRITE);
         AccessMap.getInstance().createObj(current_subj, "trojan");
@@ -110,7 +110,7 @@ public class Main {
                 "доверенному пользователю.");
         current_subj = secretuser;
         System.out.println("Доверенный пользователь запускает троян со своими правами доступа!");
-        AccessMap.getInstance().createSubj(AccessMap.getInstance().admin, "tr", "tr");
+        AccessMap.getInstance().createSubj(current_subj, "tr", "tr");
         System.out.println("Создан вредоносный субъект");
         HRUsubj tr = AccessMap.getInstance().findSubj("tr");
         AccessMap.getInstance().setAccess(hijacker, "tr", "o2", AccessType.WRITE);
