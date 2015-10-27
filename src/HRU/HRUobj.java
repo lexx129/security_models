@@ -22,4 +22,9 @@ public class HRUobj {
         HRUobj obj = (HRUobj) o;
         return name.equals(obj.name);
     }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

@@ -19,7 +19,7 @@ public class HRUsubj extends HRUobj{
         return AccessMap.getInstance().createSubj(this, name, password);
     }
     public boolean createObj (String name) throws IllegalAccessException {
-        return AccessMap.getInstance().createObj(this, new HRUobj(name));
+        return AccessMap.getInstance().createObj(this, name);
     }
     public boolean destroySubj(String name) throws IllegalStateException{
         return AccessMap.getInstance().destroySubj(this, name);
