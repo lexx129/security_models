@@ -92,12 +92,13 @@ public class Main {
         AccessMap.getInstance().setAccess(secretuser, "secret", "o3", AccessType.WRITE);
         AccessMap.getInstance().setAccess(secretuser, "secret", "o3", AccessType.EXECUTE);
 //        current_subj = hijacker;
+        System.out.println("Текущие права доступа доверенного пользователя: ");
         AccessMap.getInstance().open(secretuser);
         System.out.println("--------------");
-
         AccessMap.getInstance().setAccess(hijacker, "hijacker", "o2", AccessType.READ);
         AccessMap.getInstance().setAccess(hijacker, "hijacker", "o2", AccessType.WRITE);
         AccessMap.getInstance().setAccess(hijacker, "hijacker", "o2", AccessType.EXECUTE);
+        System.out.println("Текущие права доступа пользователя-злоумышленника: ");
         AccessMap.getInstance().open(hijacker);
         AccessMap.getInstance().setAccess(hijacker, "secret", "o2", AccessType.READ);
         AccessMap.getInstance().setAccess(hijacker, "secret", "o2", AccessType.WRITE);
@@ -110,7 +111,8 @@ public class Main {
                 "доверенному пользователю.");
         current_subj = secretuser;
         System.out.println("Доверенный пользователь запускает троян со своими правами доступа!");
-        AccessMap.getInstance().createSubj(current_subj, "tr", "tr");
+        if (!AccessMap.getInstance().createSubj(current_subj, "tr", "tr"))
+            System.exit(-1);
         System.out.println("Создан вредоносный субъект");
         HRUsubj tr = AccessMap.getInstance().findSubj("tr");
         AccessMap.getInstance().setAccess(hijacker, "tr", "o2", AccessType.WRITE);
