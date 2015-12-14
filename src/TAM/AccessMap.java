@@ -20,8 +20,8 @@ public class AccessMap {
         }
 
 
-        public boolean createObj(TAMsubj creator, String name) {
-            TAMobj new_obj = new TAMobj(name);
+        public boolean createObj(TAMsubj creator, String name, String  objectType) {
+            TAMobj new_obj = new TAMobj(name, objectType);
             HashMap<TAMobj, HashSet<TAM.AccessType>> ownedObj = subjmap.get(creator);
             if (ownedObj != null) {
                 Object access = objmap.get(new_obj);
@@ -48,17 +48,17 @@ public class AccessMap {
             }
         }
 
-        public void createAdm(String name, String password) {
+       /* public void createAdm(String name, String password) {
             admin = new TAMsubj(name, password);
             subjmap.put(admin, new HashMap<>());
             HashSet<TAM.AccessType> neu = new HashSet<>();
             neu.add(TAM.AccessType.OWN);
             subjmap.get(admin).put(admin, neu);
-        }
+        }*/
 
-        public boolean createSubj(TAMsubj creator, String name, String password) {
-            TAMsubj subj = new TAMsubj(name, password);
-            if (creator.equals(admin)) {
+        public boolean createSubj(TAMsubj creator, String name, String password, String type) {
+            TAMsubj subj = new TAMsubj(name, password, type);
+//            if (creator.equals(admin)) {
                 if (!subjmap.containsKey(subj)) {
                     HashSet<TAM.AccessType> neu = new HashSet<>();
                     neu.add(TAM.AccessType.OWN);
@@ -76,11 +76,11 @@ public class AccessMap {
                     System.err.println("Субъект с таким именем уже зарегистрирован");
                     return false;
                 }
-            }
-            else {
-                System.err.println("Только администратор имеет право на создание субъекта.");
-                return false;
-            }
+//            }
+//            else {
+//                System.err.println("Только администратор имеет право на создание субъекта.");
+//                return false;
+//            }
         }
 
         public int checkAccess(TAMsubj s, TAMobj o, TAM.AccessType access) throws IllegalAccessException {
@@ -101,7 +101,7 @@ public class AccessMap {
 //                }
                 }
             } //else throw new IllegalAccessException("Ошибка доступа. Субъект в системе не зарегистрирован");
-            System.err.println("Ощибка доступа. Субъект в системе не зарегестрирован.");
+            System.err.println("Ошибка доступа. Субъект в системе не зарегестрирован.");
 
             return -1;
         }
@@ -115,6 +115,7 @@ public class AccessMap {
                             subjmap.get(executor).remove(subj);
                         subjmap.remove(subj);
                         objmap.remove(subj);
+                        return true;
                     } else
                         throw new IllegalArgumentException("Нельзя удалить несуществующий субъект");
                 }
@@ -219,14 +220,13 @@ public class AccessMap {
         public void open(TAMsubj taMsubj) {
             HashMap<TAMobj, HashSet<TAM.AccessType>> map = subjmap.get(taMsubj);
 
-
             for (TAMobj taMobj : map.keySet()) {
-                String message = "[%s] имя: %s тип доступа: %s";
+                String message = "[%s] имя: %s; тип объекта: %s; тип доступа: %s";
                 String type = "object";
                 if (taMobj instanceof TAMsubj)
                     type = "subject";
                 for (TAM.AccessType accessType : map.get(taMobj))
-                    System.out.println(String.format(message, type, taMobj.getName(),
+                    System.out.println(String.format(message, type, taMobj.getName(), taMobj.getType(),
                             accessType.getDesc()));
 
             }

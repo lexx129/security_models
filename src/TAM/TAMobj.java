@@ -5,10 +5,17 @@ package TAM;
  */
 public class TAMobj {
     protected String name;
+    protected String type;
 
-    public TAMobj(String name){
+    public TAMobj(String name, String type) {
         this.name = name;
+        this.type = type;
     }
+
+    public String getType() {
+        return type;
+    }
+
     public String getName(){
         return name;
     }
@@ -20,7 +27,7 @@ public class TAMobj {
         if (o == null || getClass() != o.getClass())
             return false;
         TAMobj obj = (TAMobj) o;
-        return name.equals(obj.name);
+        return name.equals(obj.name) && type.equals(obj.type);
     }
 
     @Override

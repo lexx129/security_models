@@ -6,8 +6,8 @@ package TAM;
 public class TAMsubj extends TAMobj{
     private String password;
 
-    public TAMsubj(String name, String password) {
-        super(name);
+    public TAMsubj(String name, String password, String type) {
+        super(name, type);
         this.password = password;
     }
 
@@ -15,11 +15,11 @@ public class TAMsubj extends TAMobj{
         return password;
     }
 
-    public boolean createSubj(String name, String password){
-        return TAM.AccessMap.getInstance().createSubj(this, name, password);
+    public boolean createSubj(String name, String password, String type){
+        return TAM.AccessMap.getInstance().createSubj(this, name, password, type);
     }
-    public boolean createObj (String name) throws IllegalAccessException {
-        return TAM.AccessMap.getInstance().createObj(this, name);
+    public boolean createObj (String name, String type) {
+        return TAM.AccessMap.getInstance().createObj(this, name, type);
     }
     public boolean destroySubj(String name) throws IllegalStateException{
         return TAM.AccessMap.getInstance().destroySubj(this, name);

@@ -3,13 +3,13 @@ package TAM;
 /**
  * Created by Lexx on 14.12.2015.
  */
-public enum ObjectType {
-    SECRET("v"), NOSECRET("n");
-
+public enum SubjectType {
+     ADMIN("a"), USER("u");
     String desc;
 
-    ObjectType(String n) {
-        desc = n;
+    SubjectType(String user) {
+        desc = user;
+
     }
 
     public String getDesc() {
