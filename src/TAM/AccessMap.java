@@ -29,6 +29,9 @@ public class AccessMap {
             if (!objmap.containsKey(new_obj)){
                 HashSet<TAM.AccessType> neu = new HashSet<>();
                 neu.add(TAM.AccessType.OWN);
+//                neu.add(AccessType.READ);
+//                neu.add(AccessType.WRITE);
+//                neu.add(AccessType.EXECUTE);
                 ownedObj.put(new_obj, neu);
 //                ownedObj.put(new_obj, AccessType.READ);
 //                ownedObj.put(new_obj, AccessType.WRITE);
@@ -61,7 +64,8 @@ public class AccessMap {
 //            if (creator.equals(admin)) {
         if (!subjmap.containsKey(subj)) {
             HashSet<TAM.AccessType> neu = new HashSet<>();
-            neu.add(TAM.AccessType.OWN);
+            neu.add(AccessType.OWN);
+
             subjmap.put(subj, new HashMap<>());
             subjmap.get(subj).put(subj, neu);
             if (creator != null)

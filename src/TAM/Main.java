@@ -13,6 +13,7 @@ public class Main {
     private static String[] subjTypes = new String[]{"admin", "user"};
     private static String[] objTypes = new String[]{"secret", "nonsecret"};
     private static HashMap<String, HashSet<String>> dependencies = new HashMap<>();
+    private static boolean secure = false;
 
     public static void main(String[] args) {
         System.out.println("***TAM security model***\n");
@@ -63,8 +64,17 @@ public class Main {
                 case "exit": {
                     System.exit(0);
                 }
+                case "scenario": {
+                    scenario();
+                    break;
+                }
+                case "whoami": {
+                    System.out.println(current_subj.getName());
+                    break;
+                }
                 default:
                     System.err.println("Unknown command.");
+                    break;
             }
         }
     }
@@ -113,11 +123,43 @@ public class Main {
                     HashSet<String> neu = new HashSet<>();
                     neu.add(son.getType());
                     dependencies.put(father.getType(), neu);
-                }
-                else
-                if (!dependencies.get(father.getType()).contains(son.getType()))
-                    dependencies.get(subj_name).add(son.getType());
+                } else if (!dependencies.get(father.getType()).contains(son.getType()))
+                    dependencies.get(father.getType()).add(son.getType());
                 System.out.println("**Access granted.**");
+            }
+        } else
+            System.err.println("You need to login first.");
+    }
+
+    private static void setFullAccess(Scanner scanner) {
+        System.out.println("To what subject do we get access? ");
+        String subj_name = scanner.next();
+        System.out.println("On what object? ");
+        String obj_name = scanner.next();
+        HashSet<AccessType> types = new HashSet<>();
+        types.add(AccessType.READ);
+        types.add(AccessType.WRITE);
+        types.add(AccessType.EXECUTE);
+        if (current_subj != null) {
+            for (AccessType type : types) {
+                if (current_subj.addAccess(subj_name, obj_name, type)) {
+                    TAMsubj father = AccessMap.getInstance().findSubj(subj_name);
+                    TAMobj son = AccessMap.getInstance().findObj(obj_name);
+                    if (secure) {
+                        if (father.getType().equals("admin") && son.getType().equals("nonsecret")) {
+                            System.err.println("nonsecret type cannot be a child of admin type!");
+//                            System.exit(-1);
+                            return;
+                        }
+                    }
+                    if (dependencies.get(father.getType()) == null) {
+                        HashSet<String> neu = new HashSet<>();
+                        neu.add(son.getType());
+                        dependencies.put(father.getType(), neu);
+                    } else if (!dependencies.get(father.getType()).contains(son.getType()))
+                        dependencies.get(father.getType()).add(son.getType());
+                    System.out.println("**Access granted.**");
+                }
             }
         } else
             System.err.println("You need to login first.");
@@ -182,12 +224,11 @@ public class Main {
         if (current_subj != null) {
             current_subj.createObj(obj_name, type);
             TAMobj fresh = AccessMap.getInstance().findObj(obj_name);
-            if ((dependencies.get(current_subj.getType()) == null) ) { //|| !dependencies.get(current_subj.getType()).contains(fresh.getType())) {
+            if ((dependencies.get(current_subj.getType()) == null)) { //|| !dependencies.get(current_subj.getType()).contains(fresh.getType())) {
                 HashSet<String> neu = new HashSet<>();
                 neu.add(fresh.getType());
                 dependencies.put(current_subj.getType(), neu);
-            }
-            else if (!dependencies.get(current_subj.getType()).contains(fresh.getType())){
+            } else if (!dependencies.get(current_subj.getType()).contains(fresh.getType())) {
                 dependencies.get(current_subj.getType()).add(fresh.getType());
                /* System.out.println("Dependence for object type " + fresh.getType()
                         + " in subject " + current_subj.getType() + " is added");*/
@@ -212,12 +253,11 @@ public class Main {
         AccessMap.getInstance().createSubj(current_subj, username, password, type);
         TAMsubj fresh = AccessMap.getInstance().findSubj(username);
         if (current_subj != null) {
-            if ((dependencies.get(current_subj.getType()) == null) ) { //|| !dependencies.get(current_subj.getType()).contains(fresh.getType())) {
+            if ((dependencies.get(current_subj.getType()) == null)) { //|| !dependencies.get(current_subj.getType()).contains(fresh.getType())) {
                 HashSet<String> neu = new HashSet<>();
                 neu.add(fresh.getType());
                 dependencies.put(current_subj.getType(), neu);
-            } else
-            if (!dependencies.get(current_subj.getType()).contains(fresh.getType())) {
+            } else if (!dependencies.get(current_subj.getType()).contains(fresh.getType())) {
                 dependencies.get(current_subj.getType()).add(fresh.getType());
                /* System.out.println("Dependence for subject type" + fresh.getType()
                         + " in subject" + current_subj.getType() + "is added");*/
@@ -241,6 +281,87 @@ public class Main {
             if (curr.contains(target))
                 dependencies.get(object).remove(target);
         }
+    }
+
+    private static void scenario() {
+        AccessMap map = AccessMap.getInstance();
+        System.out.println("**Preparing start conditions**");
+        Scanner scan = new Scanner(System.in);
+        map.createSubj(current_subj, "s1", "123", "admin");
+        map.createSubj(current_subj, "s2", "234", "user");
+        current_subj = map.findSubj("s1");
+        map.createObj(current_subj, "o1", "secret");
+        map.createObj(current_subj, "o3", "secret");
+        current_subj = map.findSubj("s2");
+        map.createObj(current_subj, "o2", "nonsecret");
+        map.setAccess(current_subj, "s1", "o2", AccessType.READ);
+        map.setAccess(current_subj, "s1", "o2", AccessType.WRITE);
+        map.setAccess(current_subj, "s1", "o2", AccessType.EXECUTE);
+        System.out.println("\n**Now create a trojan nonsecret object**\n");
+//        System.out.println("\n**Create admin user s1**\n");
+//        createSubj(scan);
+//        System.out.println("\n**Create simple user s2**\n");
+//        createSubj(scan);
+//        current_subj = map.findSubj("s1");
+//        System.out.println("\n**Create secret object o1**\n");
+//        createObj(scan);
+//        System.out.println("\n**Create secret object o3**\n");
+//        createObj(scan);
+//        current_subj = map.findSubj("s2");
+//        System.out.println("\n**Create nonsecret object o2**\n");
+//        createObj(scan);
+//        System.out.println("\n**Now give READ, WRITE and EXECUTE rights to s1 on o2**\n");
+//        setAccess(scan);
+//        setAccess(scan);
+//        setAccess(scan);
+//        System.out.println("_____________\nCurrent access matrix for s1\n_____________");
+//        map.open(map.findSubj("s1"));
+//        System.out.println("---------");
+//        System.out.println("_____________\nCurrent access matrix for s2\n_____________");
+//        map.open(map.findSubj("s2"));
+//        System.out.println("---------");
+        createObj(scan);
+        HashSet<String> temp = new HashSet<>();
+        temp.add("nonsecret");
+        dependencies.put("nonsecret", temp);
+//       temp.clear();
+        System.out.println("\n**Now give READ, WRITE, EXECUTE rights to s1 on trojan**\n");
+        setFullAccess(scan);
+        if (secure)
+            return;
+//        setAccess(scan);
+//        setAccess(scan);
+//        setAccess(scan);
+        current_subj = map.findSubj("s1");
+        System.out.println("\n**Now admin user is going to run trojan!**\n");
+        createSubj(scan);
+        System.out.println("\n**Trojan admin subject was created, giving it access to o2**\n");
+        current_subj = map.findSubj("s2");
+        setFullAccess(scan);
+        HashSet<String> temp1 = new HashSet<>();
+        temp1.add("admin");
+        dependencies.put("secret", temp1);
+        dependencies.get("nonsecret").add("admin");
+        dependencies.get("user").add("admin");
+        dependencies.get("admin").add("admin");
+        current_subj = map.findSubj("s1");
+        System.out.println("\n**Giving to trojan rights on o1**\n");
+        setFullAccess(scan);
+        System.out.println("\n**Giving to trojan rights on o3**\n");
+        setFullAccess(scan);
+        printDep();
+        System.out.println("\n**Now trojan gonna create secret object o` in nonsecret o2**\n");
+        current_subj = map.findSubj("trojan");
+        System.out.println("\n**Trojan subject creates secret o`**\n");
+        createObj(scan);
+        setFullAccess(scan);
+        System.out.println("\n**Trojan gives READ to s2 on o`**\n");
+        setAccess(scan);
+        dependencies.get("secret").add("secret");
+        dependencies.get("nonsecret").add("secret");
+        printDep();
+        System.out.println("\n**Trojan copied secret file o3 to o'. Now s2 can read o3.**\n + " +
+                "**Attack succeeded!**");
     }
 
 
