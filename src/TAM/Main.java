@@ -109,8 +109,14 @@ public class Main {
             if (current_subj.addAccess(subj_name, obj_name, accessType)) {
                 TAMsubj father = AccessMap.getInstance().findSubj(subj_name);
                 TAMobj son = AccessMap.getInstance().findObj(obj_name);
+                if (dependencies.get(father.getType()) == null) {
+                    HashSet<String> neu = new HashSet<>();
+                    neu.add(son.getType());
+                    dependencies.put(father.getType(), neu);
+                }
+                else
                 if (!dependencies.get(father.getType()).contains(son.getType()))
-                    dependencies.get(subj_name).add(obj_name);
+                    dependencies.get(subj_name).add(son.getType());
                 System.out.println("**Access granted.**");
             }
         } else
